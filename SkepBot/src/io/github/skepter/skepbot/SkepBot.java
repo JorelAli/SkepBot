@@ -32,6 +32,7 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.WindowConstants;
 
+import io.github.skepter.skepbot.modules.DiceRoll;
 import io.github.skepter.skepbot.modules.Leet;
 import io.github.skepter.skepbot.modules.Module;
 import io.github.skepter.skepbot.modules.Oodler;
@@ -189,6 +190,7 @@ public class SkepBot extends ListenerAdapter {
         modules.add(new Spongebob());
         //I prefer my own leet generator to the one by Wolfram (it's less spammy)
         modules.add(new Leet());
+        modules.add(new DiceRoll());
         
         System.out.println("All set!");
         
@@ -251,7 +253,9 @@ public class SkepBot extends ListenerAdapter {
 			
 			long cooldownTime = cooldownsPerPerson.getOrDefault(username, 0L);
 			//Cooldown system where you can't request things for ~10 seconds
-			if(System.currentTimeMillis() > cooldownTime || isSkepBot(event)) {
+			
+			long averageCooldown = ((cooldownTime - System.currentTimeMillis()) / 1000); //Gives a "human readable" estimate of how long they have to go
+			if(System.currentTimeMillis() > cooldownTime || isSkepBot(event) || averageCooldown == 0) {
 				cooldownsPerPerson.put(username, System.currentTimeMillis() + (COOLDOWN * 1000));
 				
 				boolean success = false;
@@ -263,8 +267,9 @@ public class SkepBot extends ListenerAdapter {
 					}
 				}
 				
-				//if success == false
-				//GOTO wolfram
+				if(!success) {
+					//GOTO wolfram alpha
+				}
 				
 				if(playingHangman) {
 					if(mainMsgLC.length() == 1 || mainMsgLC.equalsIgnoreCase(hangmanWord)) {
@@ -415,8 +420,6 @@ public class SkepBot extends ListenerAdapter {
 					} catch (IOException e) {
 						sendMessage(channel, "I tried to think up a dad joke, but I couldn't think of anything.");
 					}
-				} else if(mainMsgLC.contains("roll a die") || mainMsgLC.contains("roll a dice")) {
-					sendMessage(channel, "I rolled a " + ThreadLocalRandom.current().nextInt(1, 7) + "!");
 				} else if(mainMsgLC.contains("flip a coin")) {
 					sendMessage(channel, "Flipping a coin...");
 					scheduleLater(() -> {sendMessage(channel, ThreadLocalRandom.current().nextBoolean() ? "It's heads!" : "It's tails!");}, ThreadLocalRandom.current().nextInt(1, 5));
@@ -456,7 +459,7 @@ public class SkepBot extends ListenerAdapter {
 				} 
 				
 			} else {
-				sendMessage(channel, username + ", you're still on cooldown for around " + ((cooldownTime - System.currentTimeMillis()) / 1000) + " seconds");
+				sendMessage(channel, username + ", you're still on cooldown for around " + averageCooldown + " seconds");
 			}
 			
 		}
