@@ -58,12 +58,12 @@ public class SkepBot extends ListenerAdapter {
 	private Set<String> hints;
 	
 	//Online status
-	private static final boolean DISPLAY_ONLINE_STATUS = false;
+	private static final boolean DISPLAY_ONLINE_STATUS = true;
 	private static final String ONLINE_MESSAGE = ">> SkepBot is now online <<";
 	
 	//Cooldowns
 	Map<String, Long> cooldownsPerPerson = new WeakHashMap<String, Long>();
-	private static final int COOLDOWN = 10;
+	private static final int COOLDOWN = 5;
 
 	//Modules (Using a list preserves insertion order!
 	static List<Module> modules;
@@ -133,6 +133,7 @@ public class SkepBot extends ListenerAdapter {
 	}
 	
 	public static void onClose() {
+		pinchcliffesmpChannel.sendMessage(">> SkepBot is now offline <<").queue();
     	System.exit(0);
 	}
 	
@@ -190,6 +191,7 @@ public class SkepBot extends ListenerAdapter {
         modules.add(new NumberFact());
         modules.add(new ChuckNorris());
         modules.add(new RockPaperScissors());
+        modules.add(new PinchBot());
         
         System.out.println("All set!");
         
@@ -254,7 +256,7 @@ public class SkepBot extends ListenerAdapter {
 			//Cooldown system where you can't request things for ~10 seconds
 			
 			long averageCooldown = ((cooldownTime - System.currentTimeMillis()) / 1000); //Gives a "human readable" estimate of how long they have to go
-			if(System.currentTimeMillis() > cooldownTime || isSkepBot(event) || averageCooldown == 0) {
+			if(System.currentTimeMillis() > cooldownTime || isSkepter(event) || averageCooldown == 0 || playingHangman) {
 				cooldownsPerPerson.put(username, System.currentTimeMillis() + (COOLDOWN * 1000));
 				
 				for(Module module : modules) {
@@ -440,7 +442,7 @@ public class SkepBot extends ListenerAdapter {
 		}
 	}
 	
-	private boolean isSkepBot(MessageReceivedEvent event) {
+	private boolean isSkepter(MessageReceivedEvent event) {
 		return event.getMessage().getAuthor().getId().equals("125375393334034433");
 	}
 }
