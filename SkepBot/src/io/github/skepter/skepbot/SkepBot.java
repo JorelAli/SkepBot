@@ -29,6 +29,7 @@ import net.dv8tion.jda.core.AccountType;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.JDABuilder;
 import net.dv8tion.jda.core.entities.ChannelType;
+import net.dv8tion.jda.core.entities.Game;
 import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.events.ReconnectedEvent;
 import net.dv8tion.jda.core.events.ResumedEvent;
@@ -131,6 +132,9 @@ public class SkepBot extends ListenerAdapter {
 		}
 	}
 	
+	public static void onClose() {
+    	System.exit(0);
+	}
 	
 	public static void main(String[] args) throws LoginException, IllegalArgumentException, InterruptedException, RateLimitedException, IOException, ClassNotFoundException, InstantiationException, IllegalAccessException, UnsupportedLookAndFeelException {
 		
@@ -156,7 +160,10 @@ public class SkepBot extends ListenerAdapter {
 		JDA jda = new JDABuilder(AccountType.CLIENT).setToken(TOKEN).buildBlocking();
 		System.out.println("Adding our listener...");
         jda.addEventListener(bot);
+        jda.getPresence().setGame(Game.of("Minecraft"));
         System.out.println("Loading interface...");
+        
+        
                
         pinchcliffesmpChannel = jda.getTextChannelById(337772474894909450L);
         staffChannel = jda.getTextChannelById(338431553241743360L);
@@ -168,7 +175,7 @@ public class SkepBot extends ListenerAdapter {
         frame.setBounds(0, 0, 250, 100);
         frame.setLocationRelativeTo(null);
         JButton button = new JButton("Click to turn off SkepBot");
-        button.addActionListener((e) -> {System.exit(0);});
+        button.addActionListener((e) -> {onClose();});
         frame.getContentPane().add(button);
         frame.setVisible(true);
         
@@ -182,6 +189,7 @@ public class SkepBot extends ListenerAdapter {
         modules.add(new DadJoke());
         modules.add(new NumberFact());
         modules.add(new ChuckNorris());
+        modules.add(new RockPaperScissors());
         
         System.out.println("All set!");
         
