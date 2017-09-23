@@ -172,6 +172,7 @@ public class SkepBot extends ListenerAdapter {
         frame.getContentPane().add(button);
         frame.setVisible(true);
         
+        //Modules, modules, modules!
         System.out.println("Loading modules...");
         modules = new ArrayList<Module>();
         modules.add(new Oodler());
@@ -248,20 +249,14 @@ public class SkepBot extends ListenerAdapter {
 			if(System.currentTimeMillis() > cooldownTime || isSkepBot(event) || averageCooldown == 0) {
 				cooldownsPerPerson.put(username, System.currentTimeMillis() + (COOLDOWN * 1000));
 				
-				boolean success = false;
 				for(Module module : modules) {
 					module.init(username, mainMsg);
 					if(module.isReady()) {
-						success = true;
 						sendMessage(channel, module.output());
+						return;
 					}
 				}
-				
-				if(success) {
-					return;
-					//GOTO wolfram alpha
-				}
-				
+								
 				if(playingHangman) {
 					if(mainMsgLC.length() == 1 || mainMsgLC.equalsIgnoreCase(hangmanWord)) {
 						
