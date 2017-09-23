@@ -6,47 +6,54 @@ public abstract class Module {
 		STARTS_WITH, CONTAINS, MATCHES;
 	}
 	
-	protected final String input;
-	protected final String username;
+	protected String input = null;
+	protected String username = null;
 	
 	private final PatternType type;
 	private final String[] patterns;
 	
-	public Module(String username, String input, PatternType type, String... patterns) {
-		this.username = username;
-		this.input = input;
+	public Module(PatternType type, String... patterns) {
 		this.type = type;
 		this.patterns = patterns;
 	}
 	
 	private boolean startsWith() {
 		for(String string : patterns) {
-			if(!input.toLowerCase().startsWith(string.toLowerCase())) {
-				return false;
+			if(input.toLowerCase().startsWith(string.toLowerCase())) {
+				return true;
 			}
 		}
-		return true;
+		return false;
 	}
 	
 	private boolean contains() {
 		for(String string : patterns) {
 			if(!input.toLowerCase().contains(string.toLowerCase())) {
-				return false;
+				return true;
 			}
 		}
-		return true;
+		return false;
 	}
 	
 	private boolean matches() {
 		for(String string : patterns) {
 			if(!input.toLowerCase().matches(string)) {
-				return false;
+				return true;
 			}
 		}
-		return true;
+		return false;
+	}
+	
+	public void init(String username, String input) {
+		this.username = username;
+		this.input = input;
 	}
 	
 	public boolean isReady() {
+		if(username == null || input == null) {
+			System.out.println("Module not initialised!");
+			return false;
+		}
 		switch(type) {
 			case CONTAINS:
 				return contains();

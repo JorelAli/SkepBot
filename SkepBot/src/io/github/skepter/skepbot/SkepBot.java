@@ -32,8 +32,10 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.WindowConstants;
 
+import io.github.skepter.skepbot.modules.Leet;
 import io.github.skepter.skepbot.modules.Module;
 import io.github.skepter.skepbot.modules.Oodler;
+import io.github.skepter.skepbot.modules.Spongebob;
 import net.dv8tion.jda.core.AccountType;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.JDABuilder;
@@ -74,7 +76,7 @@ public class SkepBot extends ListenerAdapter {
 	private static final int COOLDOWN = 10;
 
 	//Modules (Using a list preserves insertion order!
-	List<Module> modules = new ArrayList<Module>();
+	static List<Module> modules;
 	
 	//Channels
 	static MessageChannel pinchcliffesmpChannel;
@@ -182,8 +184,11 @@ public class SkepBot extends ListenerAdapter {
         frame.setVisible(true);
         
         System.out.println("Loading modules...");
-        
-        
+        modules = new ArrayList<Module>();
+        modules.add(new Oodler());
+        modules.add(new Spongebob());
+        //I prefer my own leet generator to the one by Wolfram (it's less spammy)
+        modules.add(new Leet());
         
         System.out.println("All set!");
         
@@ -249,10 +254,17 @@ public class SkepBot extends ListenerAdapter {
 			if(System.currentTimeMillis() > cooldownTime || isSkepBot(event)) {
 				cooldownsPerPerson.put(username, System.currentTimeMillis() + (COOLDOWN * 1000));
 				
-				Module r = new Oodler(username, mainMsg);
-				if(r.isReady()) {
-					sendMessage(channel, r.output());
+				boolean success = false;
+				for(Module module : modules) {
+					module.init(username, mainMsg);
+					if(module.isReady()) {
+						success = true;
+						sendMessage(channel, module.output());
+					}
 				}
+				
+				//if success == false
+				//GOTO wolfram
 				
 				if(playingHangman) {
 					if(mainMsgLC.length() == 1 || mainMsgLC.equalsIgnoreCase(hangmanWord)) {
@@ -403,18 +415,6 @@ public class SkepBot extends ListenerAdapter {
 					} catch (IOException e) {
 						sendMessage(channel, "I tried to think up a dad joke, but I couldn't think of anything.");
 					}
-				} else if(mainMsgLC.startsWith("oodle ")) {
-					sendMessage(channel, mainMsg.substring(6).replaceAll("[aeiou]", "oodle").replaceAll("[AEIOU]", "Oodle"));
-				} else if(mainMsgLC.startsWith("dab")) {
-					sendMessage(channel, "\\*Dabs*");
-				} else if(mainMsgLC.startsWith("spongebob ")) {
-					StringBuilder builder = new StringBuilder();
-					for(char c : mainMsgLC.substring(10).toCharArray()) {
-						builder.append(ThreadLocalRandom.current().nextBoolean() ? Character.toUpperCase(c) : c);
-					}
-					sendMessage(channel, builder.toString());
-				} else if(mainMsg.startsWith("1337") || mainMsgLC.startsWith("leet")) {
-					sendMessage(channel, new LeetGenerator(mainMsg.substring(5)).leet());
 				} else if(mainMsgLC.contains("roll a die") || mainMsgLC.contains("roll a dice")) {
 					sendMessage(channel, "I rolled a " + ThreadLocalRandom.current().nextInt(1, 7) + "!");
 				} else if(mainMsgLC.contains("flip a coin")) {
