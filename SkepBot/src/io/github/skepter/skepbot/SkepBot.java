@@ -32,11 +32,7 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.WindowConstants;
 
-import io.github.skepter.skepbot.modules.DiceRoll;
-import io.github.skepter.skepbot.modules.Leet;
-import io.github.skepter.skepbot.modules.Module;
-import io.github.skepter.skepbot.modules.Oodler;
-import io.github.skepter.skepbot.modules.Spongebob;
+import io.github.skepter.skepbot.modules.*;
 import net.dv8tion.jda.core.AccountType;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.JDABuilder;
@@ -191,6 +187,7 @@ public class SkepBot extends ListenerAdapter {
         //I prefer my own leet generator to the one by Wolfram (it's less spammy)
         modules.add(new Leet());
         modules.add(new DiceRoll());
+        modules.add(new DadJoke());
         
         System.out.println("All set!");
         
@@ -389,10 +386,7 @@ public class SkepBot extends ListenerAdapter {
 					}
 				}
 				
-				if(mainMsgLC.startsWith("notify skepter")) {
-					displayTray(username, mainMsg);
-					sendMessage(channel, "I've sent Skepter a notification. :D");
-				} else if(mainMsgLC.contains("hangman")) {
+				if(mainMsgLC.contains("hangman")) {
 					if(!playingHangman) {
 						playingHangman = true;
 						try {
@@ -420,9 +414,6 @@ public class SkepBot extends ListenerAdapter {
 					} catch (IOException e) {
 						sendMessage(channel, "I tried to think up a dad joke, but I couldn't think of anything.");
 					}
-				} else if(mainMsgLC.contains("flip a coin")) {
-					sendMessage(channel, "Flipping a coin...");
-					scheduleLater(() -> {sendMessage(channel, ThreadLocalRandom.current().nextBoolean() ? "It's heads!" : "It's tails!");}, ThreadLocalRandom.current().nextInt(1, 5));
 				} else if(mainMsgLC.matches(".*tell me.*chuck norris joke")) {
 					try {
 						sendMessage(channel, WebsiteGetters.getChuckNorrisJoke());

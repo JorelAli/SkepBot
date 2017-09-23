@@ -28,7 +28,7 @@ public abstract class Module {
 	
 	private boolean contains() {
 		for(String string : patterns) {
-			if(!input.toLowerCase().contains(string.toLowerCase())) {
+			if(input.toLowerCase().contains(string.toLowerCase())) {
 				return true;
 			}
 		}
@@ -37,7 +37,7 @@ public abstract class Module {
 	
 	private boolean matches() {
 		for(String string : patterns) {
-			if(!input.toLowerCase().matches(string)) {
+			if(input.toLowerCase().matches(string)) {
 				return true;
 			}
 		}
