@@ -1,11 +1,5 @@
 package io.github.skepter.skepbot;
 
-import java.awt.AWTException;
-import java.awt.Image;
-import java.awt.SystemTray;
-import java.awt.Toolkit;
-import java.awt.TrayIcon;
-import java.awt.TrayIcon.MessageType;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -19,8 +13,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.WeakHashMap;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -184,10 +176,11 @@ public class SkepBot extends ListenerAdapter {
         modules = new ArrayList<Module>();
         modules.add(new Oodler());
         modules.add(new Spongebob());
-        //I prefer my own leet generator to the one by Wolfram (it's less spammy)
         modules.add(new Leet());
         modules.add(new DiceRoll());
         modules.add(new DadJoke());
+        modules.add(new NumberFact());
+        modules.add(new ChuckNorris());
         
         System.out.println("All set!");
         
@@ -264,7 +257,8 @@ public class SkepBot extends ListenerAdapter {
 					}
 				}
 				
-				if(!success) {
+				if(success) {
+					return;
 					//GOTO wolfram alpha
 				}
 				
@@ -403,23 +397,7 @@ public class SkepBot extends ListenerAdapter {
 						}
 					}
 					
-				} else if(mainMsgLC.matches(".*tell me.*dad joke")) {
-
-					if (ThreadLocalRandom.current().nextInt(0, 1000000) == 0) {
-						sendMessage(channel, username + " just activated the special 1 in a million joke! If you don't know SQL, just put NoSQL on your resume!");
-						return;
-					}
-					try {
-						sendMessage(channel, WebsiteGetters.getDadJoke());
-					} catch (IOException e) {
-						sendMessage(channel, "I tried to think up a dad joke, but I couldn't think of anything.");
-					}
-				} else if(mainMsgLC.matches(".*tell me.*chuck norris joke")) {
-					try {
-						sendMessage(channel, WebsiteGetters.getChuckNorrisJoke());
-					} catch (IOException e) {
-						sendMessage(channel, "I tried to think up a Chuck Norris joke, but I couldn't think of anything :/");
-					}
+				
 				} else if(mainMsgLC.contains("would you rather")) {
 					try {
 						sendMessage(channel, WebsiteGetters.getWouldYouRather());
@@ -427,12 +405,6 @@ public class SkepBot extends ListenerAdapter {
 						sendMessage(channel, "I tried to think of a \"would you rather\" question, but I couldn't think of anything :(");
 					}
 					return;
-				} else if(mainMsgLC.matches(".*tell me.*number.*")) {
-					try {
-						sendMessage(channel, WebsiteGetters.getNumberFact(mainMsgLC));
-					} catch (IOException e) {
-						sendMessage(channel, "I tried to think up an interesting fact, but couldn't think of anything D:");
-					}
 				} else if(mainMsgLC.endsWith("?")) {
 					try {
 						sendMessage(channel, WebsiteGetters.shortAnswersWolframAlpha(mainMsgLC));
@@ -467,31 +439,5 @@ public class SkepBot extends ListenerAdapter {
 	
 	private boolean isSkepBot(MessageReceivedEvent event) {
 		return event.getMessage().getAuthor().getId().equals("125375393334034433");
-	}
-	
-	private void scheduleLater(Runnable r, int seconds) {
-		new Timer().schedule(new TimerTask() {
-			
-			@Override
-			public void run() {
-				r.run();
-			}
-		}, seconds * 1000);
-	}
-	
-	private static void displayTray(String username, String originalMessage) {
-		SystemTray mainTray = SystemTray.getSystemTray();
-		Image trayIconImage = Toolkit.getDefaultToolkit().getImage(SkepBot.class.getResource("SkepBot.png"));
-		TrayIcon mainTrayIcon = new TrayIcon(trayIconImage);
-		
-	    mainTrayIcon.setImageAutoSize(true);
-        try {
-			mainTray.add(mainTrayIcon);
-		} catch (AWTException e) {
-			e.printStackTrace();
-		}
-		mainTrayIcon.displayMessage("SkepBot", username + ": " + originalMessage.substring("notify Skepter".length()), MessageType.NONE);
-		System.err.println(originalMessage.substring("notify Skepter".length()));
-		System.err.flush();
 	}
 }

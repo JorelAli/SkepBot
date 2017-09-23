@@ -3,6 +3,7 @@ package io.github.skepter.skepbot.modules;
 import java.util.HashMap;
 import java.util.Map;
 
+//I prefer my own leet generator to the one by Wolfram (it's less spammy)
 public class Leet extends Module {
 	
 	private char english[] = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'};
