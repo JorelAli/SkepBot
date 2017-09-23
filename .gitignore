@@ -1,0 +1,6 @@
+SkepBot/skepbot.properties
+*.project
+SkepBot/.classpath
+*.jar
+SkepBot/.settings/org.eclipse.jdt.core.prefs
+SkepBot/bin

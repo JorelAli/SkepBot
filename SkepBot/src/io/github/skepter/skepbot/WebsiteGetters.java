@@ -1,0 +1,138 @@
+package io.github.skepter.skepbot;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLEncoder;
+import java.text.DecimalFormat;
+
+import org.json.JSONObject;
+
+public class WebsiteGetters {
+
+	public static String shortAnswersWolframAlpha(String query) throws IOException {
+		StringBuilder result = new StringBuilder();
+		String urlStr = "http://api.wolframalpha.com/v1/result?appid=" + SkepBot.WOLFRAM_ALPHA_ID + "&i=" + URLEncoder.encode(query, "UTF-8") + "&units=metric";
+		System.out.println(urlStr);
+		URL url = new URL(urlStr);
+		HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+		conn.setRequestMethod("GET");
+		
+		if(conn.getResponseCode() == 501) {
+			return "I couldn't understand that, sorry";
+		}		
+		
+		BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+		String line;
+		while ((line = rd.readLine()) != null) {
+			result.append(line);
+		}
+		rd.close();
+		
+		String output = result.toString();
+		if(output.equals("I am a computational knowledge engine.")) {
+			output = "I am Skepter's custom creation";
+		} else if(output.matches("\\d+\\/\\d+")) {
+			double a = Double.parseDouble(output.split("\\/")[0]);
+			double b = Double.parseDouble(output.split("\\/")[1]);
+			double resultDouble = a / b;
+			DecimalFormat format = new DecimalFormat("#.00");
+			return format.format(resultDouble) + " (2 decimal places)";
+		}
+		return output;
+	}
+
+	public static String getDadJoke() throws IOException {
+		StringBuilder result = new StringBuilder();
+		URL url = new URL("https://icanhazdadjoke.com/");
+		HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+		conn.setRequestMethod("GET");
+		conn.setRequestProperty("Accept", "text/plain");
+	    conn.addRequestProperty("User-Agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.0)");
+		BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+		String line;
+		while ((line = rd.readLine()) != null) {
+			result.append(line);
+		}
+		rd.close();
+		return result.toString();
+	}
+
+	public static String getChuckNorrisJoke() throws IOException {
+		StringBuilder result = new StringBuilder();
+		URL url = new URL("http://api.icndb.com/jokes/random/");
+		HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+		conn.setRequestMethod("GET");
+		BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+		String line;
+		while ((line = rd.readLine()) != null) {
+			result.append(line);
+		}
+		rd.close();
+		String raw = result.toString();
+		String joke = raw.substring(raw.indexOf("joke\": \"") + 8, raw.indexOf("\", \"cate"));
+		return joke;
+	}
+
+	public static String getWouldYouRather() throws IOException {
+		StringBuilder result = new StringBuilder();
+		URL url = new URL("https://www.rrrather.com/botapi");
+		HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+		conn.setRequestMethod("GET");
+		BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+		String line;
+		while ((line = rd.readLine()) != null) {
+			result.append(line);
+		}
+		rd.close();		
+		String raw = result.toString();
+		JSONObject ob = new JSONObject(raw);
+		if(ob.getBoolean("nsfw")) {
+			return getWouldYouRather();
+		} else {
+			return ob.get("title") + ": " + ob.get("choicea") + " OR " + ob.get("choiceb");
+		}
+	}
+	
+	public static String getNumberFact(String mainMsgLC) throws IOException {
+		String number = mainMsgLC.replaceAll("\\D", "");
+		StringBuilder result = new StringBuilder();
+		URL url = new URL("http://numbersapi.com/" + number + "?notfound=floor");
+		HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+		conn.setRequestMethod("GET");
+		conn.addRequestProperty("User-Agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.0)");
+		BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+		String line;
+		while ((line = rd.readLine()) != null) {
+			result.append(line);
+		}
+		rd.close();
+
+		String resultantNumber = result.toString().replaceAll("\\D", "");
+		if (!number.equals(resultantNumber)) {
+			return "I couldn't find any interesting info about that number";
+		} else {
+			return result.toString();
+		}
+	}
+	
+	public static String randomNoun() throws IOException {
+		String urlStr = "http://www.wordgenerator.net/application/p.php?" + "type=1" + "&id=nouns" + "&id2=null" + "&id3=null" + "&spaceflag=false";
+		
+		StringBuilder result = new StringBuilder();
+		URL url = new URL(urlStr);
+		HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+		conn.setRequestMethod("GET");
+        conn.addRequestProperty("User-Agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.0)");
+		BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+		String line;
+		while ((line = rd.readLine()) != null) {
+			result.append(line);
+		}
+		rd.close();
+		return result.toString().split(",")[0];
+	}
+
+}
