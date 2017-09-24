@@ -24,7 +24,17 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.WindowConstants;
 
-import io.github.skepter.skepbot.modules.*;
+import io.github.skepter.skepbot.modules.ChuckNorris;
+import io.github.skepter.skepbot.modules.DadJoke;
+import io.github.skepter.skepbot.modules.DiceRoll;
+import io.github.skepter.skepbot.modules.Leet;
+import io.github.skepter.skepbot.modules.Magic8;
+import io.github.skepter.skepbot.modules.Module;
+import io.github.skepter.skepbot.modules.NumberFact;
+import io.github.skepter.skepbot.modules.Oodler;
+import io.github.skepter.skepbot.modules.PinchBot;
+import io.github.skepter.skepbot.modules.RockPaperScissors;
+import io.github.skepter.skepbot.modules.Spongebob;
 import net.dv8tion.jda.core.AccountType;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.JDABuilder;
@@ -58,7 +68,7 @@ public class SkepBot extends ListenerAdapter {
 	private Set<String> hints;
 	
 	//Online status
-	private static final boolean DISPLAY_ONLINE_STATUS = true;
+	private static final boolean DISPLAY_ONLINE_STATUS = false;
 	private static final String ONLINE_MESSAGE = ">> SkepBot is now online <<";
 	
 	//Cooldowns
@@ -133,7 +143,9 @@ public class SkepBot extends ListenerAdapter {
 	}
 	
 	public static void onClose() {
-		pinchcliffesmpChannel.sendMessage(">> SkepBot is now offline <<").queue();
+		if(DISPLAY_ONLINE_STATUS) {
+			pinchcliffesmpChannel.sendMessage(">> SkepBot is now offline <<").queue();
+		}
     	System.exit(0);
 	}
 	
@@ -163,8 +175,6 @@ public class SkepBot extends ListenerAdapter {
         jda.addEventListener(bot);
         jda.getPresence().setGame(Game.of("Minecraft"));
         System.out.println("Loading interface...");
-        
-        
                
         pinchcliffesmpChannel = jda.getTextChannelById(337772474894909450L);
         staffChannel = jda.getTextChannelById(338431553241743360L);
@@ -192,6 +202,7 @@ public class SkepBot extends ListenerAdapter {
         modules.add(new ChuckNorris());
         modules.add(new RockPaperScissors());
         modules.add(new PinchBot());
+        modules.add(new Magic8());
         
         System.out.println("All set!");
         
@@ -435,7 +446,8 @@ public class SkepBot extends ListenerAdapter {
 	
 	private void sendMessage(MessageChannel channel, String str) {
 		if(str.length() > 256) {
-			channel.sendMessage("Message is too long to be displayed in chat").queue();
+			channel.sendMessage("Message is too long to be displayed in chat (shortening to 256 characters)").queue();
+			channel.sendMessage(str.substring(0, 256)).queue();
 			System.out.println(str);
 		} else {
 			channel.sendMessage(str).queue();

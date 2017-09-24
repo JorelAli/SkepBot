@@ -49,9 +49,17 @@ public abstract class Module {
 		this.input = input;
 	}
 	
+	public boolean extraConditions() {
+		return true;
+	}
+	
 	public boolean isReady() {
 		if(username == null || input == null) {
 			System.out.println("Module not initialised!");
+			return false;
+		}
+
+		if(!extraConditions()) {
 			return false;
 		}
 		switch(type) {
