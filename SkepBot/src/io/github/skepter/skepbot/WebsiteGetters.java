@@ -16,7 +16,7 @@ public class WebsiteGetters {
 	public static String shortAnswersWolframAlpha(String query) throws IOException {
 		StringBuilder result = new StringBuilder();
 		String urlStr = "http://api.wolframalpha.com/v1/result?appid=" + SkepBot.WOLFRAM_ALPHA_ID + "&i=" + URLEncoder.encode(query, "UTF-8") + "&units=metric";
-		System.out.println(urlStr);
+		System.out.println("Response sent to Wolfram Alpha");
 		URL url = new URL(urlStr);
 		HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 		conn.setRequestMethod("GET");
@@ -33,9 +33,7 @@ public class WebsiteGetters {
 		rd.close();
 		
 		String output = result.toString();
-		if(output.equals("I am a computational knowledge engine.")) {
-			output = "I am Skepter's custom creation";
-		} else if(output.matches("\\d+\\/\\d+")) {
+		if(output.matches("\\d+\\/\\d+")) {
 			double a = Double.parseDouble(output.split("\\/")[0]);
 			double b = Double.parseDouble(output.split("\\/")[1]);
 			double resultDouble = a / b;

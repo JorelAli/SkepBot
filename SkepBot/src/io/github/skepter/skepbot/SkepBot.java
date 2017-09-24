@@ -17,6 +17,7 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.WeakHashMap;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.logging.Logger;
 
 import javax.security.auth.login.LoginException;
 import javax.swing.JButton;
@@ -278,7 +279,7 @@ public class SkepBot extends ListenerAdapter {
 		
 		//Only available for pinch, lets me communicate as normal elsewhere without random NPEs
 		if(checkPublicChannels || (Arrays.stream(users).anyMatch(event.getChannel().getName()::equals))) {
-			System.out.println(message);
+			Logger.getGlobal().info(message);
 			String username = event.getAuthor().getName();
 			if(message.contains(":") && event.getAuthor().getName().equals("PinchBot")) {
 				username = message.split(":")[0];
