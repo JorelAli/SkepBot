@@ -60,6 +60,24 @@ public class WebsiteGetters {
 		rd.close();
 		return result.toString();
 	}
+	
+	public static String getRandomFact() throws IOException {
+		StringBuilder result = new StringBuilder();
+		URL url = new URL("http://randomfactgenerator.net/");
+		HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+		conn.setRequestMethod("GET");
+	    conn.addRequestProperty("User-Agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.0)");
+		BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+		String line;
+		while ((line = rd.readLine()) != null) {
+			result.append(line);
+		}
+		rd.close();
+		
+		String raw = result.toString();
+		String output = raw.substring(raw.indexOf("<div id='z'>"), raw.indexOf("<br/>", raw.indexOf("<div id='z'>")));
+		return output.substring(12);
+	}
 
 	public static String getChuckNorrisJoke() throws IOException {
 		StringBuilder result = new StringBuilder();
