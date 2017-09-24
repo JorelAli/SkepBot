@@ -11,6 +11,10 @@ public class RockPaperScissors extends Module {
 	@Override
 	public String output() {
 		
+		if(ThreadLocalRandom.current().nextInt(0, 1000) == 0) {
+			return "I choose you, Pikachu!";
+		}
+		
 		int rock = getOccurances(input.toLowerCase(), "rock");
 		int paper = getOccurances(input.toLowerCase(), "paper");
 		int scissors = getOccurances(input.toLowerCase(), "scissors");
