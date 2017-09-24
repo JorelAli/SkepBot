@@ -27,7 +27,7 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.WindowConstants;
 
-import io.github.skepter.skepbot.modules.Module;
+import io.github.skepter.skepbot.modules.*;
 import net.dv8tion.jda.core.AccountType;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.JDABuilder;
@@ -61,7 +61,7 @@ public class SkepBot extends ListenerAdapter {
 	private Set<String> hints;
 	
 	//Online status
-	private static final boolean DISPLAY_ONLINE_STATUS = false;
+	private static final boolean DISPLAY_ONLINE_STATUS = true;
 	private static final String ONLINE_MESSAGE = ">> SkepBot is now online <<";
 	
 	//Cooldowns
@@ -194,7 +194,7 @@ public class SkepBot extends ListenerAdapter {
         // Prepare.
         String packageName = "io.github.skepter.skepbot.modules";
         List<Class<Module>> moduleList = new ArrayList<Class<Module>>();
-        URL root = Thread.currentThread().getContextClassLoader().getResource(packageName.replace(".", "/"));
+        URL root = SkepBot.class.getClassLoader().getResource(packageName.replace(".", "/"));
 
         // Filter .class files.
         File[] files = new File(root.getFile()).listFiles(new FilenameFilter() {
@@ -202,33 +202,40 @@ public class SkepBot extends ListenerAdapter {
                 return name.endsWith(".class");
             }	
         });
-
-        // Find classes implementing ICommand.
-        for (File f : files) {
-            String className = f.getName().replaceAll(".class$", "");
-            Class<?> cls = Class.forName(packageName + "." + className);
-            if (Module.class.isAssignableFrom(cls)) {
-                moduleList.add((Class<Module>) cls);
+        
+        if(files != null) {
+        	 // Find classes implementing Module.
+            for (File f : files) {
+                String className = f.getName().replaceAll(".class$", "");
+                Class<?> cls = Class.forName(packageName + "." + className);
+                if (Module.class.isAssignableFrom(cls)) {
+                    moduleList.add((Class<Module>) cls);
+                }
             }
-        }
-        for(Class<Module> c : moduleList) {
-        	if(c.getSimpleName().equals("Module"))
-        		continue;
-        	System.out.println("Adding " + c.getSimpleName());
-        	modules.add(c.newInstance());
-        }
-        
-//        modules.add(new Oodler());
-//        modules.add(new Spongebob());
-//        modules.add(new Leet());
-//        modules.add(new DiceRoll());
-//        modules.add(new DadJoke());
-//        modules.add(new NumberFact());
-//        modules.add(new ChuckNorris());
-//        modules.add(new RockPaperScissors());
-//        modules.add(new PinchBot());
-//        modules.add(new Magic8());
-        
+            for(Class<Module> c : moduleList) {
+            	if(c.getSimpleName().equals("Module"))
+            		continue;
+            	System.out.println("Adding " + c.getSimpleName());
+            	modules.add(c.newInstance());
+            }
+            
+		} else {
+			// Guess we're gonna have to do it manually :(
+			modules.add(new ChuckNorris());
+			modules.add(new CoinFlip());
+			modules.add(new DadJoke());
+			modules.add(new DiceRoll());
+			modules.add(new Dictionary());
+			modules.add(new Leet());
+			modules.add(new Magic8());
+			modules.add(new NumberFact());
+			modules.add(new Oodler());
+			modules.add(new PinchBot());
+			modules.add(new RandomFact());
+			modules.add(new RockPaperScissors());
+			modules.add(new Spongebob());
+
+		}
         System.out.println("All set!");
         
 	}
