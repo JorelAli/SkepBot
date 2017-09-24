@@ -3,9 +3,11 @@ package io.github.skepter.skepbot;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -24,17 +26,7 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.WindowConstants;
 
-import io.github.skepter.skepbot.modules.ChuckNorris;
-import io.github.skepter.skepbot.modules.DadJoke;
-import io.github.skepter.skepbot.modules.DiceRoll;
-import io.github.skepter.skepbot.modules.Leet;
-import io.github.skepter.skepbot.modules.Magic8;
 import io.github.skepter.skepbot.modules.Module;
-import io.github.skepter.skepbot.modules.NumberFact;
-import io.github.skepter.skepbot.modules.Oodler;
-import io.github.skepter.skepbot.modules.PinchBot;
-import io.github.skepter.skepbot.modules.RockPaperScissors;
-import io.github.skepter.skepbot.modules.Spongebob;
 import net.dv8tion.jda.core.AccountType;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.JDABuilder;
@@ -80,7 +72,6 @@ public class SkepBot extends ListenerAdapter {
 	
 	//Channels
 	static MessageChannel pinchcliffesmpChannel;
-	static MessageChannel staffChannel;
 	
 	private static void storeDefaultProperties(File file) {
 		Properties prop = new Properties();
@@ -149,6 +140,7 @@ public class SkepBot extends ListenerAdapter {
     	System.exit(0);
 	}
 	
+	@SuppressWarnings("unchecked")
 	public static void main(String[] args) throws LoginException, IllegalArgumentException, InterruptedException, RateLimitedException, IOException, ClassNotFoundException, InstantiationException, IllegalAccessException, UnsupportedLookAndFeelException {
 		
 		UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
@@ -167,19 +159,21 @@ public class SkepBot extends ListenerAdapter {
 		}
 		System.out.println("Properties loaded!");
 		
-		//Everything else
-		SkepBot bot = new SkepBot();
+		//Create bot
 		System.out.println("Building bot...");
+		SkepBot bot = new SkepBot();
 		JDA jda = new JDABuilder(AccountType.CLIENT).setToken(TOKEN).buildBlocking();
-		System.out.println("Adding our listener...");
         jda.addEventListener(bot);
         jda.getPresence().setGame(Game.of("Minecraft"));
-        System.out.println("Loading interface...");
-               
-        pinchcliffesmpChannel = jda.getTextChannelById(337772474894909450L);
-        staffChannel = jda.getTextChannelById(338431553241743360L);
+		System.out.println("Bot created!");
+
+		//Register channels
+		pinchcliffesmpChannel = jda.getTextChannelById(337772474894909450L);
         if(DISPLAY_ONLINE_STATUS)
         	pinchcliffesmpChannel.sendMessage(ONLINE_MESSAGE).queue();
+		
+		//Create interface
+        System.out.println("Loading interface...");
         
         JFrame frame = new JFrame("SkepBot");
         frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
@@ -189,20 +183,50 @@ public class SkepBot extends ListenerAdapter {
         button.addActionListener((e) -> {onClose();});
         frame.getContentPane().add(button);
         frame.setVisible(true);
+        System.out.println("Interface loaded.");
         
-        //Modules, modules, modules!
+        //Loads modules dynamically from the modules package
         System.out.println("Loading modules...");
         modules = new ArrayList<Module>();
-        modules.add(new Oodler());
-        modules.add(new Spongebob());
-        modules.add(new Leet());
-        modules.add(new DiceRoll());
-        modules.add(new DadJoke());
-        modules.add(new NumberFact());
-        modules.add(new ChuckNorris());
-        modules.add(new RockPaperScissors());
-        modules.add(new PinchBot());
-        modules.add(new Magic8());
+        
+        //https://stackoverflow.com/questions/1810614/getting-all-classes-from-a-package
+        // Prepare.
+        String packageName = "io.github.skepter.skepbot.modules";
+        List<Class<Module>> moduleList = new ArrayList<Class<Module>>();
+        URL root = Thread.currentThread().getContextClassLoader().getResource(packageName.replace(".", "/"));
+
+        // Filter .class files.
+        File[] files = new File(root.getFile()).listFiles(new FilenameFilter() {
+            public boolean accept(File dir, String name) {
+                return name.endsWith(".class");
+            }	
+        });
+
+        // Find classes implementing ICommand.
+        for (File f : files) {
+            String className = f.getName().replaceAll(".class$", "");
+            Class<?> cls = Class.forName(packageName + "." + className);
+            if (Module.class.isAssignableFrom(cls)) {
+                moduleList.add((Class<Module>) cls);
+            }
+        }
+        for(Class<Module> c : moduleList) {
+        	if(c.getSimpleName().equals("Module"))
+        		continue;
+        	System.out.println("Adding " + c.getSimpleName());
+        	modules.add(c.newInstance());
+        }
+        
+//        modules.add(new Oodler());
+//        modules.add(new Spongebob());
+//        modules.add(new Leet());
+//        modules.add(new DiceRoll());
+//        modules.add(new DadJoke());
+//        modules.add(new NumberFact());
+//        modules.add(new ChuckNorris());
+//        modules.add(new RockPaperScissors());
+//        modules.add(new PinchBot());
+//        modules.add(new Magic8());
         
         System.out.println("All set!");
         
