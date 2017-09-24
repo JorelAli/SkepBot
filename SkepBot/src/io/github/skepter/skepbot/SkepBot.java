@@ -298,6 +298,11 @@ public class SkepBot extends ListenerAdapter {
 					module.init(username, mainMsg);
 					if(module.isReady()) {
 						sendMessage(channel, module.output());
+						if(module.extraOutputs() != null) {
+							for(String output : module.extraOutputs()) {
+								sendMessage(channel, output);
+							}
+						}
 						return;
 					}
 				}

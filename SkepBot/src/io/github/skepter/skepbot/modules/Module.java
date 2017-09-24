@@ -17,7 +17,7 @@ public abstract class Module {
 		this.patterns = patterns;
 	}
 	
-	private boolean startsWith() {
+	private final boolean startsWith() {
 		for(String string : patterns) {
 			if(input.toLowerCase().startsWith(string.toLowerCase())) {
 				return true;
@@ -26,7 +26,7 @@ public abstract class Module {
 		return false;
 	}
 	
-	private boolean contains() {
+	private final boolean contains() {
 		for(String string : patterns) {
 			if(input.toLowerCase().contains(string.toLowerCase())) {
 				return true;
@@ -35,7 +35,7 @@ public abstract class Module {
 		return false;
 	}
 	
-	private boolean matches() {
+	private final boolean matches() {
 		for(String string : patterns) {
 			if(input.toLowerCase().matches(string)) {
 				return true;
@@ -44,16 +44,12 @@ public abstract class Module {
 		return false;
 	}
 	
-	public void init(String username, String input) {
+	public final void init(String username, String input) {
 		this.username = username;
 		this.input = input;
 	}
 	
-	public boolean extraConditions() {
-		return true;
-	}
-	
-	public boolean isReady() {
+	public final boolean isReady() {
 		if(username == null || input == null) {
 			System.out.println("Module not initialised!");
 			return false;
@@ -73,7 +69,15 @@ public abstract class Module {
 				return false;
 		}
 	}
+
+	public boolean extraConditions() {
+		return true;
+	}
 	
 	public abstract String output();
+	
+	public String[] extraOutputs() {
+		return null;
+	}
 	
 }
