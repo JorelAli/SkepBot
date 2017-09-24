@@ -260,7 +260,13 @@ public class SkepBot extends ListenerAdapter {
 		
 		//Takes into account the : from pinchbot
 		//This returns the main message they send, for example "hello"
-		String mainMsg = event.getAuthor().getName().equals("PinchBot") ? (message.contains(":") ? message.substring(message.indexOf(":") + 2) : message) : message;	
+		String mainMsg = "";
+		if(event.getAuthor().getName().equals("SkepBot") && event.getMessage().getContent().startsWith("**")) {
+			mainMsg = event.getAuthor().getName().equals("SkepBot") ? (message.contains(":") ? message.substring(message.indexOf(":") + 2) : message) : message;
+		} else {
+			mainMsg = event.getAuthor().getName().equals("PinchBot") ? (message.contains(":") ? message.substring(message.indexOf(":") + 2) : message) : message;
+		}
+			
 		
 		//Messages MUST now start with "SkepBot, <query>"
 		
@@ -288,7 +294,7 @@ public class SkepBot extends ListenerAdapter {
 		if(checkPublicChannels || (Arrays.stream(users).anyMatch(event.getChannel().getName()::equals))) {
 			Logger.getGlobal().info(message);
 			String username = event.getAuthor().getName();
-			if(message.contains(":") && event.getAuthor().getName().equals("PinchBot")) {
+			if(message.contains(":") && (event.getAuthor().getName().equals("PinchBot") || (event.getAuthor().getName().equals("SkepBot")))) {
 				username = message.split(":")[0];
 				//Remove the annoying ** before and after the player's name
 				username = username.replace("*", "");
