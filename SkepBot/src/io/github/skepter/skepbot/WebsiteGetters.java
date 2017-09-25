@@ -9,7 +9,7 @@ import java.net.URLEncoder;
 import java.text.DecimalFormat;
 import java.util.concurrent.ThreadLocalRandom;
 
-import org.json.JSONException;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 public class WebsiteGetters {
@@ -99,7 +99,7 @@ public class WebsiteGetters {
 		return joke;
 	}
 	
-	public static String getDefinition(String wordToDefine) throws IOException {
+	public static String[] getDefinition(String wordToDefine) throws IOException {
 		StringBuilder result = new StringBuilder();
 		URL url = new URL("https://owlbot.info/api/v1/dictionary/" + wordToDefine + "?format=json");
 		HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -111,15 +111,32 @@ public class WebsiteGetters {
 			result.append(line);
 		}
 		rd.close();
-		String raw = result.toString();
-		System.out.println(raw);
-		JSONObject ob = null;
-		try {
-			ob = new JSONObject(raw.substring(1, raw.length() - 1));
-		} catch(JSONException e) {
-			return "I have no clue what " + wordToDefine + " means. Sorry!";
+		//String raw = result.toString();
+		//System.out.println(raw);
+		
+		
+		JSONArray arr = new JSONArray(result.toString());
+		
+		if(arr.length() == 0) {
+			return new String[] {"I have no clue what " + wordToDefine + " means. Sorry!"};
 		}
-		return ob.getString("defenition");
+		
+		String[] output = new String[arr.length()];
+		
+		for(int i = 0; i < arr.length(); i++) {
+			output[i] = arr.getJSONObject(i).getString("defenition");
+		}
+		
+//		JSONObject ob = null;
+//		try {
+//			ob = new JSONObject(raw.substring(1, raw.length() - 1));
+//		} catch(JSONException e) {
+//			return "I have no clue what " + wordToDefine + " means. Sorry!";
+//		}
+		
+		
+		
+		return output;//ob.getString("defenition");
 	}
 
 	public static String getWouldYouRather() throws IOException {

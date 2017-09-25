@@ -13,16 +13,29 @@ public class Dictionary extends Module {
 	
 	@Override
 	public String output() {
-		
+		return null;
+	}
+	
+	@Override
+	public String[] extraOutputs() {
 		input = input.toLowerCase().replaceAll("[^A-Za-z\\s]", "");
 		String[] arr = input.split(" ");
 		String wordToDefine = arr[arr.length - 1];
 		
 		try {
-			return WebsiteGetters.getDefinition(wordToDefine);
+			String[] definitions = WebsiteGetters.getDefinition(wordToDefine);
+			if(definitions.length != 1) {
+				String[] temp = new String[definitions.length + 1];
+				temp[0] = "I have found " + definitions.length + " different definitions:";
+				for(int i = 0; i < definitions.length; i++) {
+					temp[i + 1] = definitions[i];
+				}
+				definitions = temp;
+			}
+			return definitions;
 		} catch (IOException e) {
 			e.printStackTrace();
-			return "I have no clue what " + wordToDefine + " means. Sorry!";
+			return new String[] {"I have no clue what " + wordToDefine + " means. Sorry!"};
 		}
 	}
 

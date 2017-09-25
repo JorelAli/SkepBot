@@ -73,7 +73,7 @@ public class SkepBot extends ListenerAdapter {
 	private Set<String> hints;
 	
 	//Online status
-	private static final boolean DISPLAY_ONLINE_STATUS = true;
+	private static final boolean DISPLAY_ONLINE_STATUS = false;
 	private static final String ONLINE_MESSAGE = ">> SkepBot is now online <<";
 	
 	//Cooldowns
@@ -326,7 +326,9 @@ public class SkepBot extends ListenerAdapter {
 				for(Module module : modules) {
 					module.init(username, mainMsg);
 					if(module.isReady()) {
-						sendMessage(channel, module.output());
+						if(module.output() != null) {
+							sendMessage(channel, module.output());
+						}
 						if(module.extraOutputs() != null) {
 							for(String output : module.extraOutputs()) {
 								sendMessage(channel, output);
