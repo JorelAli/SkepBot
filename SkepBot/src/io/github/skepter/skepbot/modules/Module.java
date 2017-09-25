@@ -54,7 +54,7 @@ public abstract class Module {
 	
 	public final boolean isReady() {
 		if(username == null || input == null) {
-			System.out.println("Module not initialised!");
+			SkepBot.log("Module not initialised!");
 			return false;
 		}
 

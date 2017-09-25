@@ -17,7 +17,7 @@ public class WebsiteGetters {
 	public static String shortAnswersWolframAlpha(String query) throws IOException {
 		StringBuilder result = new StringBuilder();
 		String urlStr = "http://api.wolframalpha.com/v1/result?appid=" + SkepBot.WOLFRAM_ALPHA_ID + "&i=" + URLEncoder.encode(query, "UTF-8") + "&units=metric";
-		System.out.println("Response sent to Wolfram Alpha");
+		SkepBot.log("Response sent to Wolfram Alpha");
 		URL url = new URL(urlStr);
 		HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 		conn.setRequestMethod("GET");
@@ -116,8 +116,6 @@ public class WebsiteGetters {
 			result.append(line);
 		}
 		rd.close();
-		//String raw = result.toString();
-		//System.out.println(raw);
 		
 		
 		JSONArray arr = new JSONArray(result.toString());
@@ -132,16 +130,7 @@ public class WebsiteGetters {
 			output[i] = arr.getJSONObject(i).getString("type") + ": "+ arr.getJSONObject(i).getString("defenition");
 		}
 		
-//		JSONObject ob = null;
-//		try {
-//			ob = new JSONObject(raw.substring(1, raw.length() - 1));
-//		} catch(JSONException e) {
-//			return "I have no clue what " + wordToDefine + " means. Sorry!";
-//		}
-		
-		
-		
-		return output;//ob.getString("defenition");
+		return output;
 	}
 
 	public static String getWouldYouRather() throws IOException {

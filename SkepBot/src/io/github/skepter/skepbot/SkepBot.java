@@ -8,8 +8,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.StandardOpenOption;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -17,7 +21,6 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.WeakHashMap;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.logging.Logger;
 
 import javax.security.auth.login.LoginException;
 import javax.swing.JButton;
@@ -88,6 +91,9 @@ public class SkepBot extends ListenerAdapter {
 	
 	//List of stuff it can do 
 	public static List<String> functions;
+	
+	//Log file
+	private static File logFile;
 	
 	private static void storeDefaultProperties(File file) {
 		Properties prop = new Properties();
@@ -161,7 +167,12 @@ public class SkepBot extends ListenerAdapter {
 		
 		UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		
-		System.out.println("Loading properties...");
+		System.out.println("Setting up logger...");	
+		SimpleDateFormat format = new SimpleDateFormat("d-M-YYYY_HH-mm-ss");
+		logFile = new File(System.getProperty("user.dir") + File.separator + "log " + format.format(new Date()) +  ".log");
+		System.out.println("Logger loaded");
+		
+		log("Loading properties...");
 		/*
 		 * Load properties
 		 */
@@ -173,14 +184,14 @@ public class SkepBot extends ListenerAdapter {
 		} else {
 			loadProperties(file);
 		}
-		System.out.println("Properties loaded!");
+		log("Properties loaded!");
 		
 		//Create bot
-		System.out.println("Building bot...");
+		log("Building bot...");
 		SkepBot bot = new SkepBot();
 		JDA jda = new JDABuilder(AccountType.CLIENT).setToken(TOKEN).buildBlocking();
         jda.addEventListener(bot);
-		System.out.println("Bot created!");
+        log("Bot created!");
 
 		//Register channels
 		pinchcliffesmpChannel = jda.getTextChannelById(337772474894909450L);
@@ -188,7 +199,7 @@ public class SkepBot extends ListenerAdapter {
         	pinchcliffesmpChannel.sendMessage(ONLINE_MESSAGE).queue();
 		
 		//Create interface
-        System.out.println("Loading interface...");
+        log("Loading interface...");
         
         JFrame frame = new JFrame("SkepBot");
         frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
@@ -198,10 +209,10 @@ public class SkepBot extends ListenerAdapter {
         button.addActionListener((e) -> {onClose();});
         frame.getContentPane().add(button);
         frame.setVisible(true);
-        System.out.println("Interface loaded.");
+        log("Interface loaded.");
         
         //Loads modules dynamically from the modules package
-        System.out.println("Loading modules...");
+        log("Loading modules...");
         functions = new ArrayList<String>();
         modules = new ArrayList<Module>();
         
@@ -230,7 +241,7 @@ public class SkepBot extends ListenerAdapter {
             for(Class<Module> c : moduleList) {
             	if(c.getSimpleName().equals("Module"))
             		continue;
-            	System.out.println("Adding " + c.getSimpleName());
+            	log("Adding " + c.getSimpleName());
             	modules.add(c.newInstance());
             }
             
@@ -251,7 +262,7 @@ public class SkepBot extends ListenerAdapter {
 			modules.add(new Spongebob());
 
 		}
-        System.out.println("All set!");
+        log("All set!");
         
 	}
 	
@@ -307,7 +318,6 @@ public class SkepBot extends ListenerAdapter {
 		
 		//Only available for pinch, lets me communicate as normal elsewhere without random NPEs
 		if(checkPublicChannels || (Arrays.stream(users).anyMatch(event.getChannel().getName()::equals))) {
-			Logger.getGlobal().info(message);
 			String username = event.getAuthor().getName();
 			if(message.contains(":") && (event.getAuthor().getName().equals("PinchBot") || (event.getAuthor().getName().equals("SkepBot")))) {
 				username = message.split(":")[0];
@@ -315,6 +325,8 @@ public class SkepBot extends ListenerAdapter {
 				username = username.replace("*", "");
 				//System.out.println("Minecraft username: " + username);
 			}
+			
+			log(username + ": " + message);
 			
 			long cooldownTime = cooldownsPerPerson.getOrDefault(username, 0L);
 			//Cooldown system where you can't request things for ~10 seconds
@@ -461,7 +473,7 @@ public class SkepBot extends ListenerAdapter {
 							hints = new HashSet<String>();
 							guessesRemaining = 10;
 							hangmanWord = WebsiteGetters.randomNoun().toUpperCase();
-							System.out.println(hangmanWord);
+							log("Generated a hangman word: " + hangmanWord);
 							sendMessage(channel, "I've thought up a word " + hangmanWord.length() + " letters long. You have 10 attempts remaining");
 						} catch (IOException e) {
 							sendMessage(channel, "I tried to think up a word, but couldn't think of anything *Cries*");
@@ -497,6 +509,7 @@ public class SkepBot extends ListenerAdapter {
 		if(str.length() > 2000) {
 			return;
 		}
+		log("SkepBot: " + str);
 		if(str.length() > 256) {
 			channel.sendMessage(str.substring(0, 256)).queue();
 			channel.sendMessage(str.substring(256, str.length())).queue();
@@ -507,5 +520,16 @@ public class SkepBot extends ListenerAdapter {
 	
 	private boolean isSkepter(MessageReceivedEvent event) {
 		return event.getMessage().getAuthor().getId().equals("125375393334034433");
+	}
+	
+	public static void log(String str) {
+		System.out.println(str);
+		SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss");
+		str = "[" + format.format(new Date()) + "] " + str + "\n";
+		try {
+			Files.write(logFile.toPath(), str.getBytes(), StandardOpenOption.CREATE, StandardOpenOption.APPEND, StandardOpenOption.WRITE);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 }
