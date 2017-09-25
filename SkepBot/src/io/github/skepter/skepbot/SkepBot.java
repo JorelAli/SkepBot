@@ -504,9 +504,8 @@ public class SkepBot extends ListenerAdapter {
 	
 	private void sendMessage(MessageChannel channel, String str) {
 		if(str.length() > 256) {
-			channel.sendMessage("Message is too long to be displayed in chat (shortening to 256 characters)").queue();
 			channel.sendMessage(str.substring(0, 256)).queue();
-			System.out.println(str);
+			channel.sendMessage(str.substring(256, str.length())).queue();
 		} else {
 			channel.sendMessage(str).queue();
 		}
