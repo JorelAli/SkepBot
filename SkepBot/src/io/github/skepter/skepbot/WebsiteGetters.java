@@ -39,7 +39,12 @@ public class WebsiteGetters {
 			double b = Double.parseDouble(output.split("\\/")[1]);
 			double resultDouble = a / b;
 			DecimalFormat format = new DecimalFormat("#.00");
-			return format.format(resultDouble) + " (2 decimal places)";
+			
+			if(resultDouble > Long.MAX_VALUE) {
+				return "Number is too large to compute";
+			} else {
+				return format.format(resultDouble) + " (2 decimal places)";
+			}
 		}
 		
 		if(output.contains("I can help you to compute.")) {
@@ -124,7 +129,7 @@ public class WebsiteGetters {
 		String[] output = new String[arr.length()];
 		
 		for(int i = 0; i < arr.length(); i++) {
-			output[i] = arr.getJSONObject(i).getString("defenition");
+			output[i] = arr.getJSONObject(i).getString("type") + ": "+ arr.getJSONObject(i).getString("defenition");
 		}
 		
 //		JSONObject ob = null;

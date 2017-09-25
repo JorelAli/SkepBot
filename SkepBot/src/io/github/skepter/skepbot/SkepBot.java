@@ -322,7 +322,7 @@ public class SkepBot extends ListenerAdapter {
 			long averageCooldown = ((cooldownTime - System.currentTimeMillis()) / 1000); //Gives a "human readable" estimate of how long they have to go
 			if(System.currentTimeMillis() > cooldownTime || isSkepter(event) || averageCooldown == 0 || playingHangman) {
 				cooldownsPerPerson.put(username, System.currentTimeMillis() + (COOLDOWN * 1000));
-				
+								
 				for(Module module : modules) {
 					module.init(username, mainMsg);
 					if(module.isReady()) {
@@ -505,6 +505,9 @@ public class SkepBot extends ListenerAdapter {
 	}
 	
 	private void sendMessage(MessageChannel channel, String str) {
+		if(str.length() > 2000) {
+			return;
+		}
 		if(str.length() > 256) {
 			channel.sendMessage(str.substring(0, 256)).queue();
 			channel.sendMessage(str.substring(256, str.length())).queue();
