@@ -354,7 +354,7 @@ public class SkepBot extends ListenerAdapter {
 						//They've already guessed this letter
 						if(guessedCharacters.contains(character)) {
 							sendMessage(channel, "You've already guessed this letter! (" + character + ")");
-							sendMessage(channel, "You have " + guessesRemaining + " attempts remaining: " + Arrays.deepToString(guessedCharacters.toArray()));
+							//sendMessage(channel, "You have " + guessesRemaining + " attempts remaining: " + Arrays.deepToString(guessedCharacters.toArray()));
 							return;
 						} else {
 							//Their guess
@@ -368,25 +368,23 @@ public class SkepBot extends ListenerAdapter {
 							
 							//If they now guessed it correctly from that last letter
 							if(resultant.equalsIgnoreCase(hangmanWord)) {
-								sendMessage(channel, "You're right " + username + "! The word was " + hangmanWord.toLowerCase() + "!");
+								sendMessage(channel, "You figured it out " + username + "! The word was " + hangmanWord.toLowerCase() + "!");
 								playingHangman = false;
 								return;
 							}
 							
 							//If the letter was correct
 							if(hangmanWord.contains(Character.toString(character))) {
-								sendMessage(channel, "You're right: " + resultant);
-								sendMessage(channel, "You have " + guessesRemaining + " attempts remaining: " + Arrays.deepToString(guessedCharacters.toArray()));
+								sendMessage(channel, "You're right: " + resultant + ". You have " + guessesRemaining + " attempts remaining: " + Arrays.deepToString(guessedCharacters.toArray()));
 								return;
 							} else {
 								//They're wrong
-								sendMessage(channel, "You're wrong: " + resultant);
 								guessesRemaining--;
 								if(guessesRemaining == 0) {
 									sendMessage(channel, "You've lost! The word was " + hangmanWord.toLowerCase() + "!");
 									playingHangman = false;
 								} else {
-									sendMessage(channel, "You have " + guessesRemaining + " attempts remaining: " + Arrays.deepToString(guessedCharacters.toArray()));
+									sendMessage(channel,  "You're wrong: " + resultant  + ". You have " + guessesRemaining + " attempts remaining: " + Arrays.deepToString(guessedCharacters.toArray()));
 								}
 								return;
 							}
@@ -443,14 +441,13 @@ public class SkepBot extends ListenerAdapter {
 							}
 							return;
 						}
-						//INCORRECT GUESS
-						sendMessage(channel, "You're wrong, the word wasn't " + mainMsg);
+						//INCORRECT GUESS at full word
 						guessesRemaining--;
 						if(guessesRemaining == 0) {
-							sendMessage(channel, "You've lost! The word was " + hangmanWord.toLowerCase() + "!");
+							sendMessage(channel, "You're wrong, the word wasn't " + mainMsg + ". You've lost! The word was " + hangmanWord.toLowerCase() + "!");
 							playingHangman = false;
 						} else {
-							sendMessage(channel, "You have " + guessesRemaining + " attempts remaining: " + Arrays.deepToString(guessedCharacters.toArray()));
+							sendMessage(channel, "You're wrong, the word wasn't " + mainMsg + ". You have " + guessesRemaining + " attempts remaining: " + Arrays.deepToString(guessedCharacters.toArray()));
 						}
 						return;
 					}
@@ -465,8 +462,7 @@ public class SkepBot extends ListenerAdapter {
 							guessesRemaining = 10;
 							hangmanWord = WebsiteGetters.randomNoun().toUpperCase();
 							System.out.println(hangmanWord);
-							sendMessage(channel, "I've thought up a word " + hangmanWord.length() + " letters long");
-							sendMessage(channel, "You have 10 attempts remaining");
+							sendMessage(channel, "I've thought up a word " + hangmanWord.length() + " letters long. You have 10 attempts remaining");
 						} catch (IOException e) {
 							sendMessage(channel, "I tried to think up a word, but couldn't think of anything *Cries*");
 							playingHangman = false;
@@ -474,13 +470,6 @@ public class SkepBot extends ListenerAdapter {
 					}
 					
 				
-				} else if(mainMsgLC.contains("would you rather")) {
-					try {
-						sendMessage(channel, WebsiteGetters.getWouldYouRather());
-					} catch (IOException e) {
-						sendMessage(channel, "I tried to think of a \"would you rather\" question, but I couldn't think of anything :(");
-					}
-					return;
 				} else if(mainMsgLC.endsWith("?")) {
 					try {
 						sendMessage(channel, WebsiteGetters.shortAnswersWolframAlpha(mainMsgLC));
