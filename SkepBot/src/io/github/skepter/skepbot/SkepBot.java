@@ -27,12 +27,24 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.WindowConstants;
 
-import io.github.skepter.skepbot.modules.*;
+import io.github.skepter.skepbot.modules.ChuckNorris;
+import io.github.skepter.skepbot.modules.CoinFlip;
+import io.github.skepter.skepbot.modules.DadJoke;
+import io.github.skepter.skepbot.modules.DiceRoll;
+import io.github.skepter.skepbot.modules.Dictionary;
+import io.github.skepter.skepbot.modules.Leet;
+import io.github.skepter.skepbot.modules.Magic8;
+import io.github.skepter.skepbot.modules.Module;
+import io.github.skepter.skepbot.modules.NumberFact;
+import io.github.skepter.skepbot.modules.Oodler;
+import io.github.skepter.skepbot.modules.PinchBot;
+import io.github.skepter.skepbot.modules.RandomFact;
+import io.github.skepter.skepbot.modules.RockPaperScissors;
+import io.github.skepter.skepbot.modules.Spongebob;
 import net.dv8tion.jda.core.AccountType;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.JDABuilder;
 import net.dv8tion.jda.core.entities.ChannelType;
-import net.dv8tion.jda.core.entities.Game;
 import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.events.ReconnectedEvent;
 import net.dv8tion.jda.core.events.ResumedEvent;
@@ -73,6 +85,9 @@ public class SkepBot extends ListenerAdapter {
 	
 	//Channels
 	static MessageChannel pinchcliffesmpChannel;
+	
+	//List of stuff it can do 
+	public static List<String> functions;
 	
 	private static void storeDefaultProperties(File file) {
 		Properties prop = new Properties();
@@ -165,7 +180,6 @@ public class SkepBot extends ListenerAdapter {
 		SkepBot bot = new SkepBot();
 		JDA jda = new JDABuilder(AccountType.CLIENT).setToken(TOKEN).buildBlocking();
         jda.addEventListener(bot);
-        jda.getPresence().setGame(Game.of("Minecraft"));
 		System.out.println("Bot created!");
 
 		//Register channels
@@ -188,6 +202,7 @@ public class SkepBot extends ListenerAdapter {
         
         //Loads modules dynamically from the modules package
         System.out.println("Loading modules...");
+        functions = new ArrayList<String>();
         modules = new ArrayList<Module>();
         
         //https://stackoverflow.com/questions/1810614/getting-all-classes-from-a-package

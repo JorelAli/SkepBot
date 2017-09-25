@@ -9,7 +9,7 @@ public class PinchBot extends Module {
 	List<String> responses;
 
 	public PinchBot() {
-		super(PatternType.MATCHES, ".*think.*pinchbot.*");
+		super("tell you my innter thoughts about PinchBot", PatternType.MATCHES, ".*think.*pinchbot.*");
 		responses = new ArrayList<String>();
 		responses.add("Ah, PinchBot... we go way back...");
 		responses.add("I've heard PinchBot has a temper ... I won't try its patience.");

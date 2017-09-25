@@ -5,7 +5,7 @@ import java.util.concurrent.ThreadLocalRandom;
 public class CoinFlip extends Module {
 	
 	public CoinFlip() {
-		super(PatternType.CONTAINS, "flip a coin");
+		super("flip a coin", PatternType.CONTAINS, "flip a coin");
 	}
 
 	@Override

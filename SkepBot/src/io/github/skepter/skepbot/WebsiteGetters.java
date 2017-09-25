@@ -7,6 +7,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.text.DecimalFormat;
+import java.util.concurrent.ThreadLocalRandom;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -40,6 +41,11 @@ public class WebsiteGetters {
 			DecimalFormat format = new DecimalFormat("#.00");
 			return format.format(resultDouble) + " (2 decimal places)";
 		}
+		
+		if(output.contains("I can help you to compute.")) {
+			return "I can " + SkepBot.functions.get(ThreadLocalRandom.current().nextInt(0, SkepBot.functions.size()));
+		}
+		
 		return output;
 	}
 

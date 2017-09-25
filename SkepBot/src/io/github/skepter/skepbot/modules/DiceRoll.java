@@ -8,7 +8,7 @@ public class DiceRoll extends Module {
 	final String[] expressions = {"insane", "mental", "crazy", "a psycho", "stupid", "trying to confuse me", "trying to confuse yourself", "trying to perform the impossible"};
 	
 	public DiceRoll() {
-		super(PatternType.MATCHES, ".*roll.*die.*", ".*roll.*dice.*");
+		super("roll a die", PatternType.MATCHES, ".*roll.*die.*", ".*roll.*dice.*");
 	}
 
 	@Override

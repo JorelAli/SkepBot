@@ -8,7 +8,7 @@ public class Dictionary extends Module {
 
 	
 	public Dictionary() {
-		super(PatternType.CONTAINS, "define", "definition");
+		super("define a word", PatternType.CONTAINS, "define", "definition");
 	}
 	
 	@Override

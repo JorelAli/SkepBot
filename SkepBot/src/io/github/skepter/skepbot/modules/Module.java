@@ -1,5 +1,7 @@
 package io.github.skepter.skepbot.modules;
 
+import io.github.skepter.skepbot.SkepBot;
+
 public abstract class Module {
 
 	enum PatternType {
@@ -12,7 +14,8 @@ public abstract class Module {
 	private final PatternType type;
 	private final String[] patterns;
 	
-	public Module(PatternType type, String... patterns) {
+	public Module(String function, PatternType type, String... patterns) {
+		SkepBot.functions.add(function);
 		this.type = type;
 		this.patterns = patterns;
 	}

@@ -5,7 +5,7 @@ import java.util.concurrent.ThreadLocalRandom;
 public class RockPaperScissors extends Module {
 	
 	public RockPaperScissors() {
-		super(PatternType.CONTAINS, "rock", "paper", "scissors");
+		super("play rock, paper, scissors", PatternType.CONTAINS, "rock", "paper", "scissors");
 	}
 
 	@Override

@@ -8,7 +8,7 @@ import io.github.skepter.skepbot.WebsiteGetters;
 public class DadJoke extends Module {
 
 	public DadJoke() {
-		super(PatternType.MATCHES, ".*tell me.*dad joke.*");
+		super("tell you a dad joke", PatternType.MATCHES, ".*tell me.*dad joke.*");
 	}
 
 	@Override

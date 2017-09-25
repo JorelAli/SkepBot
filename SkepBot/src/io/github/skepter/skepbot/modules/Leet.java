@@ -10,7 +10,7 @@ public class Leet extends Module {
 	private char leet[] =    {'4', '8', 'C', 'D', '3', 'F', '6', 'H', '!', 'J', 'K', '1', 'M', 'N', '0', '9', 'Q', 'R', '5', '7', 'U', 'V', 'W', 'X', 'Y', 'Z'};
 	
 	public Leet() {
-		super(PatternType.STARTS_WITH, "1337", "leet");
+		super("convert something to leetspeak", PatternType.STARTS_WITH, "1337", "leet");
 	}
 
 	@Override

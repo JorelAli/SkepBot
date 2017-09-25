@@ -7,7 +7,7 @@ import io.github.skepter.skepbot.WebsiteGetters;
 public class NumberFact extends Module {
 
 	public NumberFact() {
-		super(PatternType.MATCHES, ".*tell me.*number.*");
+		super("tell you a fact about a specific number", PatternType.MATCHES, ".*tell me.*number.*");
 	}
 	
 	@Override

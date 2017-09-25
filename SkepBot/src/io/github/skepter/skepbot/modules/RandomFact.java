@@ -7,7 +7,7 @@ import io.github.skepter.skepbot.WebsiteGetters;
 public class RandomFact extends Module {
 
 	public RandomFact() {
-		super(PatternType.MATCHES, ".*tell me.*random fact.*");
+		super("tell you a random fact", PatternType.MATCHES, ".*tell me.*random fact.*");
 	}
 
 	@Override

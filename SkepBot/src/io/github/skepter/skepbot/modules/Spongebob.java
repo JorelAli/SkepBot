@@ -5,7 +5,7 @@ import java.util.concurrent.ThreadLocalRandom;
 public class Spongebob extends Module {
 
 	public Spongebob() {
-		super(PatternType.STARTS_WITH, "spongebob ");
+		super("spongebobify phrases", PatternType.STARTS_WITH, "spongebob ");
 	}
 
 	@Override

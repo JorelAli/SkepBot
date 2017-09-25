@@ -7,7 +7,7 @@ import io.github.skepter.skepbot.WebsiteGetters;
 public class ChuckNorris extends Module {
 
 	public ChuckNorris() {
-		super(PatternType.MATCHES, ".*tell me.*chuck norris joke.*");
+		super("tell you a Chuck Norris joke", PatternType.MATCHES, ".*tell me.*chuck norris joke.*");
 	}
 	
 	@Override

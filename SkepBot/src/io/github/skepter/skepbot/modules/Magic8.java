@@ -11,7 +11,7 @@ public class Magic8 extends Module {
 			"Outlook not so good", "Very doubtful" };
 	
 	public Magic8() {
-		super(PatternType.CONTAINS, "magic8", "magic 8");
+		super("find out what the magic 8 ball thinks", PatternType.CONTAINS, "magic8", "magic 8");
 	}
 	
 	@Override
