@@ -76,7 +76,7 @@ public class SkepBot extends ListenerAdapter {
 	private Set<String> hints;
 	
 	//Online status
-	private static final boolean DISPLAY_ONLINE_STATUS = false;
+	private static final boolean DISPLAY_ONLINE_STATUS = true;
 	private static final String ONLINE_MESSAGE = ">> SkepBot is now online <<";
 	
 	//Cooldowns
@@ -326,7 +326,7 @@ public class SkepBot extends ListenerAdapter {
 				//System.out.println("Minecraft username: " + username);
 			}
 			
-			log(username + ": " + message);
+			log(username + ": " + mainMsg);
 			
 			long cooldownTime = cooldownsPerPerson.getOrDefault(username, 0L);
 			//Cooldown system where you can't request things for ~10 seconds
@@ -440,16 +440,14 @@ public class SkepBot extends ListenerAdapter {
 								guessedCharacters.forEach(builder::append);
 								builder.append("]");
 								String resultant = hangmanWord.replaceAll(builder.toString(), "-");
-								
-								sendMessage(channel, username + " used a hint (costing one guess): [" + guess + "]: " + resultant);
-								
+																
 								if(resultant.equalsIgnoreCase(hangmanWord)) {
-									sendMessage(channel, "You're right " + username + "! The word was " + hangmanWord.toLowerCase() + "!");
+									sendMessage(channel, username + " used a hint (costing one guess): [" + guess + "]: " + resultant + ". You got it " + username + "! The word was " + hangmanWord.toLowerCase() + "!");
 									playingHangman = false;
 									return;
 								}
 								
-								sendMessage(channel, "You have " + guessesRemaining + " attempts remaining: " + Arrays.deepToString(guessedCharacters.toArray()));
+								sendMessage(channel, username + " used a hint (costing one guess): [" + guess + "]: " + resultant + ". You have " + guessesRemaining + " attempts remaining: " + Arrays.deepToString(guessedCharacters.toArray()));
 							}
 							return;
 						}
