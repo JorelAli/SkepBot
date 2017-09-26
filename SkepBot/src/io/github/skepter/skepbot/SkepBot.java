@@ -38,6 +38,7 @@ import io.github.skepter.skepbot.modules.Dictionary;
 import io.github.skepter.skepbot.modules.Leet;
 import io.github.skepter.skepbot.modules.Magic8;
 import io.github.skepter.skepbot.modules.Module;
+import io.github.skepter.skepbot.modules.MumJoke;
 import io.github.skepter.skepbot.modules.NumberFact;
 import io.github.skepter.skepbot.modules.Oodler;
 import io.github.skepter.skepbot.modules.PinchBot;
@@ -254,6 +255,7 @@ public class SkepBot extends ListenerAdapter {
 			modules.add(new Dictionary());
 			modules.add(new Leet());
 			modules.add(new Magic8());
+			modules.add(new MumJoke());
 			modules.add(new NumberFact());
 			modules.add(new Oodler());
 			modules.add(new PinchBot());
@@ -469,10 +471,29 @@ public class SkepBot extends ListenerAdapter {
 						try {
 							guessedCharacters = new HashSet<Character>();
 							hints = new HashSet<String>();
-							guessesRemaining = 10;
+							
+							/*
+							 * Try and parse a specific number of guesses
+							 */
+							
+							try {
+								int i = Integer.parseInt(mainMsgLC.replaceAll("\\D", ""));
+								if(i > 128) {
+									guessesRemaining = 128;
+								} else {
+									guessesRemaining = i;
+								}
+							} catch(NumberFormatException e) {
+								if(mainMsgLC.contains("hard")) {
+									guessesRemaining = 8;
+								} else {
+									guessesRemaining = 10;
+								}	
+							}
+							
 							hangmanWord = WebsiteGetters.randomNoun().toUpperCase();
 							log("Generated a hangman word: " + hangmanWord);
-							sendMessage(channel, "I've thought up a word " + hangmanWord.length() + " letters long. You have 10 attempts remaining");
+							sendMessage(channel, "I've thought up a word " + hangmanWord.length() + " letters long. You have " + guessesRemaining + " attempts remaining");
 						} catch (IOException e) {
 							sendMessage(channel, "I tried to think up a word, but couldn't think of anything *Cries*");
 							playingHangman = false;
