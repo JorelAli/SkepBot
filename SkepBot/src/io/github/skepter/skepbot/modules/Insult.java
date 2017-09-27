@@ -7,7 +7,7 @@ import io.github.skepter.skepbot.WebsiteGetters;
 public class Insult extends Module {
 
 	public Insult() {
-		super("insult you", PatternType.CONTAINS, "insult me", "roast me");
+		super("insult you", PatternType.CONTAINS, "insult me");
 	}
 
 	@Override
