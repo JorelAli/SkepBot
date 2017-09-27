@@ -450,6 +450,10 @@ public class SkepBot extends ListenerAdapter {
 								}
 								
 								sendMessage(channel, username + " used a hint (costing one guess): [" + guess + "]: " + resultant + ". You have " + guessesRemaining + " attempts remaining: " + Arrays.deepToString(guessedCharacters.toArray()));
+							//Force end the game
+							} else if(mainMsgLC.contains("hangman") && mainMsgLC.contains("end")) {
+								sendMessage(channel, username + " forced the game of hangman to end");
+								playingHangman = false;
 							}
 							return;
 						}
@@ -478,8 +482,8 @@ public class SkepBot extends ListenerAdapter {
 							
 							try {
 								int i = Integer.parseInt(mainMsgLC.replaceAll("\\D", ""));
-								if(i > 128) {
-									guessesRemaining = 128;
+								if(i > 20) {
+									guessesRemaining = 20;
 								} else {
 									guessesRemaining = i;
 								}
