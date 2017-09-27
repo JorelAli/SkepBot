@@ -70,6 +70,21 @@ public class WebsiteGetters {
 		return result.toString();
 	}
 	
+	public static String getInsult() throws IOException {
+		StringBuilder result = new StringBuilder();
+		URL url = new URL("https://insult.mattbas.org/api/insult.txt");
+		HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+		conn.setRequestMethod("GET");
+	    conn.addRequestProperty("User-Agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.0)");
+		BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+		String line;
+		while ((line = rd.readLine()) != null) {
+			result.append(line);
+		}
+		rd.close();
+		return result.toString();
+	}
+	
 	public static String getMumJoke() throws IOException {
 		StringBuilder result = new StringBuilder();
 		URL url = new URL("http://api.yomomma.info/");

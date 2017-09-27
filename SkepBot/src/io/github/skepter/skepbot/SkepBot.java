@@ -35,6 +35,7 @@ import io.github.skepter.skepbot.modules.CoinFlip;
 import io.github.skepter.skepbot.modules.DadJoke;
 import io.github.skepter.skepbot.modules.DiceRoll;
 import io.github.skepter.skepbot.modules.Dictionary;
+import io.github.skepter.skepbot.modules.Insult;
 import io.github.skepter.skepbot.modules.Leet;
 import io.github.skepter.skepbot.modules.Magic8;
 import io.github.skepter.skepbot.modules.Module;
@@ -77,7 +78,7 @@ public class SkepBot extends ListenerAdapter {
 	private Set<String> hints;
 	
 	//Online status
-	private static final boolean DISPLAY_ONLINE_STATUS = true;
+	private static final boolean DISPLAY_ONLINE_STATUS = false;
 	private static final String ONLINE_MESSAGE = ">> SkepBot is now online <<";
 	
 	//Cooldowns
@@ -253,6 +254,7 @@ public class SkepBot extends ListenerAdapter {
 			modules.add(new DadJoke());
 			modules.add(new DiceRoll());
 			modules.add(new Dictionary());
+			modules.add(new Insult());
 			modules.add(new Leet());
 			modules.add(new Magic8());
 			modules.add(new MumJoke());
