@@ -15,6 +15,12 @@ import org.json.JSONObject;
 public class WebsiteGetters {
 
 	public static String shortAnswersWolframAlpha(String query) throws IOException {
+		
+		//What can you do?
+		if(query.toLowerCase().matches(".*what.*can.*you.*do.*")) {
+			return "I can " + SkepBot.functions.get(ThreadLocalRandom.current().nextInt(0, SkepBot.functions.size()));
+		}
+		
 		StringBuilder result = new StringBuilder();
 		String urlStr = "http://api.wolframalpha.com/v1/result?appid=" + SkepBot.WOLFRAM_ALPHA_ID + "&i=" + URLEncoder.encode(query, "UTF-8") + "&units=metric";
 		SkepBot.log("Response sent to Wolfram Alpha");
@@ -45,10 +51,6 @@ public class WebsiteGetters {
 			} else {
 				return format.format(resultDouble) + " (2 decimal places)";
 			}
-		}
-		
-		if(output.contains("I can help you to compute.")) {
-			return "I can " + SkepBot.functions.get(ThreadLocalRandom.current().nextInt(0, SkepBot.functions.size()));
 		}
 		
 		return output;
