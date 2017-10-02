@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="src" path="SkepBot/src"/>
+	<classpathentry kind="lib" path="JDA-3.3.0_260-withDependencies.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
