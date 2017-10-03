@@ -62,6 +62,8 @@ import net.dv8tion.jda.core.hooks.ListenerAdapter;
  */
 public class SkepBot extends ListenerAdapter {
 
+	public static String BOT_NAME = "SkepBot";
+	
 	static String WOLFRAM_ALPHA_ID = ""; 
 	private static String TOKEN = ""; 
 	
@@ -78,8 +80,7 @@ public class SkepBot extends ListenerAdapter {
 	private Set<String> hints;
 	
 	//Online status
-	private static final boolean DISPLAY_ONLINE_STATUS = false;
-	private static final String ONLINE_MESSAGE = ">> SkepBot is now online <<";
+	private static final boolean DISPLAY_ONLINE_STATUS = true;
 	
 	//Cooldowns
 	Map<String, Long> cooldownsPerPerson = new WeakHashMap<String, Long>();
@@ -106,6 +107,7 @@ public class SkepBot extends ListenerAdapter {
 			output = new FileOutputStream(file);
 
 			// set the properties value
+			prop.setProperty("bot_name", "SkepBot");
 			prop.setProperty("discord_token", "");
 			prop.setProperty("wolfram_alpha_id", "");
 			prop.setProperty("servers", "Pinchcliffe SMP,Skepter's Server,Blazers");
@@ -139,6 +141,7 @@ public class SkepBot extends ListenerAdapter {
 			// load a properties file
 			prop.load(input);
 
+			BOT_NAME = prop.getProperty("bot_name");
 			WOLFRAM_ALPHA_ID = prop.getProperty("wolfram_alpha_id");
 			TOKEN = prop.getProperty("discord_token");
 			guilds = prop.getProperty("servers").split(",");
@@ -159,7 +162,7 @@ public class SkepBot extends ListenerAdapter {
 	
 	public static void onClose() {
 		if(DISPLAY_ONLINE_STATUS) {
-			pinchcliffesmpChannel.sendMessage(">> SkepBot is now offline <<").queue();
+			pinchcliffesmpChannel.sendMessage(">> " + BOT_NAME + " is now offline <<").queue();
 		}
     	System.exit(0);
 	}
@@ -181,7 +184,7 @@ public class SkepBot extends ListenerAdapter {
 		File file = new File(System.getProperty("user.dir") + File.separator + "skepbot.properties");
 		if(!file.exists()) {
 			storeDefaultProperties(file);
-			JOptionPane.showMessageDialog(null, "Properties doesn't exist. Please fill out properties file before use", "SkepBot", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(null, "Properties doesn't exist. Please fill out properties file before use", BOT_NAME, JOptionPane.ERROR_MESSAGE);
 			System.exit(0);
 		} else {
 			loadProperties(file);
@@ -198,16 +201,16 @@ public class SkepBot extends ListenerAdapter {
 		//Register channels
 		pinchcliffesmpChannel = jda.getTextChannelById(337772474894909450L);
         if(DISPLAY_ONLINE_STATUS)
-        	pinchcliffesmpChannel.sendMessage(ONLINE_MESSAGE).queue();
+        	pinchcliffesmpChannel.sendMessage(">> " + BOT_NAME + " is now online <<").queue();
 		
 		//Create interface
         log("Loading interface...");
         
-        JFrame frame = new JFrame("SkepBot");
+        JFrame frame = new JFrame(BOT_NAME);
         frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         frame.setBounds(0, 0, 250, 100);
         frame.setLocationRelativeTo(null);
-        JButton button = new JButton("Click to turn off SkepBot");
+        JButton button = new JButton("Click to turn off " + BOT_NAME);
         button.addActionListener((e) -> {onClose();});
         frame.getContentPane().add(button);
         frame.setVisible(true);
@@ -273,13 +276,13 @@ public class SkepBot extends ListenerAdapter {
 	@Override
 	public void onResume(ResumedEvent event) {
 		if(DISPLAY_ONLINE_STATUS)
-        	pinchcliffesmpChannel.sendMessage(ONLINE_MESSAGE).queue();
+        	pinchcliffesmpChannel.sendMessage(">> " + BOT_NAME + " is now online <<").queue();
 	}
 	
 	@Override
 	public void onReconnect(ReconnectedEvent event) {
 		if(DISPLAY_ONLINE_STATUS)
-        	pinchcliffesmpChannel.sendMessage(ONLINE_MESSAGE).queue();
+        	pinchcliffesmpChannel.sendMessage(">> " + BOT_NAME + " is now online <<").queue();
 	}
 	
 	@Override
@@ -291,8 +294,8 @@ public class SkepBot extends ListenerAdapter {
 		//Takes into account the : from pinchbot
 		//This returns the main message they send, for example "hello"
 		String mainMsg = "";
-		if(event.getAuthor().getName().equals("SkepBot") && event.getMessage().getContent().startsWith("**")) {
-			mainMsg = event.getAuthor().getName().equals("SkepBot") ? (message.contains(":") ? message.substring(message.indexOf(":") + 2) : message) : message;
+		if(event.getAuthor().getName().equals(BOT_NAME) && event.getMessage().getContent().startsWith("**")) {
+			mainMsg = event.getAuthor().getId().equals("357899055055241216") ? (message.contains(":") ? message.substring(message.indexOf(":") + 2) : message) : message;
 		} else {
 			mainMsg = event.getAuthor().getName().equals("PinchBot") ? (message.contains(":") ? message.substring(message.indexOf(":") + 2) : message) : message;
 		}
@@ -300,10 +303,10 @@ public class SkepBot extends ListenerAdapter {
 		
 		//Messages MUST now start with "SkepBot, <query>"
 		
-		if(mainMsg.toLowerCase().startsWith("skepbot, ")) {
-			mainMsg = mainMsg.substring(9);
-		} else if(mainMsg.toLowerCase().startsWith("skepbot ")) {
-			mainMsg = mainMsg.substring(8);
+		if(mainMsg.toLowerCase().startsWith(BOT_NAME.toLowerCase() + ", ")) {
+			mainMsg = mainMsg.substring(BOT_NAME.length() + 2);
+		} else if(mainMsg.toLowerCase().startsWith(BOT_NAME.toLowerCase() + " ")) {
+			mainMsg = mainMsg.substring(BOT_NAME.length() + 1);
 		} else {
 			return;
 		}
@@ -323,7 +326,7 @@ public class SkepBot extends ListenerAdapter {
 		//Only available for pinch, lets me communicate as normal elsewhere without random NPEs
 		if(checkPublicChannels || (Arrays.stream(users).anyMatch(event.getChannel().getName()::equals))) {
 			String username = event.getAuthor().getName();
-			if(message.contains(":") && (event.getAuthor().getName().equals("PinchBot") || (event.getAuthor().getName().equals("SkepBot")))) {
+			if(message.contains(":") && (event.getAuthor().getName().equals("PinchBot") || (event.getAuthor().getId().equals("357899055055241216")))) {
 				username = message.split(":")[0];
 				//Remove the annoying ** before and after the player's name
 				username = username.replace("*", "");
@@ -534,7 +537,7 @@ public class SkepBot extends ListenerAdapter {
 		if(str.length() > 2000) {
 			return;
 		}
-		log("SkepBot: " + str);
+		log(BOT_NAME + ": " + str);
 		if(str.length() > 256) {
 			channel.sendMessage(str.substring(0, 256)).queue();
 			channel.sendMessage(str.substring(256, str.length())).queue();
