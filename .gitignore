@@ -5,3 +5,5 @@ SkepBot/.classpath
 SkepBot/.settings/org.eclipse.jdt.core.prefs
 SkepBot/bin
 *.log
+/bin/
+*.properties
