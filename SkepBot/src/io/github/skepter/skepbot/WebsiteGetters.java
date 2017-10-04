@@ -14,13 +14,15 @@ import org.json.JSONObject;
 
 public class WebsiteGetters {
 
+	private static final String USER_AGENT = "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/28.0.1500.95 Safari/537.36";
+	
 	public static String searchTheWeb(String query) throws IOException {
 		String API_KEY = SkepBot.GOOGLE_API_KEY;
 		StringBuilder result = new StringBuilder();
 		URL url = new URL("https://www.googleapis.com/customsearch/v1?key=" + API_KEY + "&cx=" + URLEncoder.encode("003889650341602883183:nyjn8x7s10q", "UTF-8") + "&q=" + URLEncoder.encode(query, "UTF-8"));
 		HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 		conn.setRequestMethod("GET");
-	    conn.addRequestProperty("User-Agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.0)");
+	    conn.addRequestProperty("User-Agent", USER_AGENT);
 	    
 		BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
 		String line;
@@ -88,7 +90,7 @@ public class WebsiteGetters {
 		HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 		conn.setRequestMethod("GET");
 		conn.setRequestProperty("Accept", "text/plain");
-	    conn.addRequestProperty("User-Agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.0)");
+	    conn.addRequestProperty("User-Agent", USER_AGENT);
 		BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
 		String line;
 		while ((line = rd.readLine()) != null) {
@@ -118,7 +120,7 @@ public class WebsiteGetters {
 		URL url = new URL("http://quandyfactory.com/insult/json");
 		HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 		conn.setRequestMethod("GET");
-	    conn.addRequestProperty("User-Agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.0)");
+	    conn.addRequestProperty("User-Agent", USER_AGENT);
 		BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
 		String line;
 		while ((line = rd.readLine()) != null) {
@@ -133,7 +135,7 @@ public class WebsiteGetters {
 		URL url = new URL("http://api.yomomma.info/");
 		HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 		conn.setRequestMethod("GET");
-	    conn.addRequestProperty("User-Agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.0)");
+	    conn.addRequestProperty("User-Agent", USER_AGENT);
 		BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
 		String line;
 		while ((line = rd.readLine()) != null) {
@@ -148,7 +150,7 @@ public class WebsiteGetters {
 		URL url = new URL("http://randomfactgenerator.net/");
 		HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 		conn.setRequestMethod("GET");
-	    conn.addRequestProperty("User-Agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.0)");
+	    conn.addRequestProperty("User-Agent", USER_AGENT);
 		BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
 		String line;
 		while ((line = rd.readLine()) != null) {
@@ -182,7 +184,7 @@ public class WebsiteGetters {
 		URL url = new URL("https://owlbot.info/api/v1/dictionary/" + wordToDefine + "?format=json");
 		HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 		conn.setRequestMethod("GET");
-	    conn.addRequestProperty("User-Agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.0)");
+	    conn.addRequestProperty("User-Agent", USER_AGENT);
 		BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
 		String line;
 		while ((line = rd.readLine()) != null) {
@@ -232,7 +234,7 @@ public class WebsiteGetters {
 		URL url = new URL("http://numbersapi.com/" + number + "?notfound=floor");
 		HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 		conn.setRequestMethod("GET");
-		conn.addRequestProperty("User-Agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.0)");
+		conn.addRequestProperty("User-Agent", USER_AGENT);
 		BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
 		String line;
 		while ((line = rd.readLine()) != null) {
@@ -255,7 +257,7 @@ public class WebsiteGetters {
 		URL url = new URL(urlStr);
 		HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 		conn.setRequestMethod("GET");
-        conn.addRequestProperty("User-Agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.0)");
+        conn.addRequestProperty("User-Agent", USER_AGENT);
 		BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
 		String line;
 		while ((line = rd.readLine()) != null) {

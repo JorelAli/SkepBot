@@ -390,6 +390,10 @@ public class SkepBot extends ListenerAdapter {
 						
 						//Get the character
 						char character = mainMsgLC.toUpperCase().toCharArray()[0];
+						if(Character.toString(character).matches("[^A-Za-z]")) {
+							sendMessage(channel, character + " is not a valid letter " + username + "!");
+							return;
+						}
 						
 						//They've already guessed this letter
 						if(guessedCharacters.contains(character)) {
@@ -510,6 +514,8 @@ public class SkepBot extends ListenerAdapter {
 								int i = Integer.parseInt(mainMsgLC.replaceAll("\\D", ""));
 								if(i > 20) {
 									guessesRemaining = 20;
+								} else if(i <= 0) { 
+									guessesRemaining = 1;
 								} else {
 									guessesRemaining = i;
 								}
