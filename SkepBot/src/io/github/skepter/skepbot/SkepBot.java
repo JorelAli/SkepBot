@@ -43,9 +43,12 @@ import io.github.skepter.skepbot.modules.MumJoke;
 import io.github.skepter.skepbot.modules.NumberFact;
 import io.github.skepter.skepbot.modules.Oodler;
 import io.github.skepter.skepbot.modules.PinchBot;
+import io.github.skepter.skepbot.modules.PoshInsult;
 import io.github.skepter.skepbot.modules.RandomFact;
 import io.github.skepter.skepbot.modules.RockPaperScissors;
+import io.github.skepter.skepbot.modules.SpellChecker;
 import io.github.skepter.skepbot.modules.Spongebob;
+import io.github.skepter.skepbot.modules.WouldYouRather;
 import net.dv8tion.jda.core.AccountType;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.JDABuilder;
@@ -64,8 +67,10 @@ public class SkepBot extends ListenerAdapter {
 
 	public static String BOT_NAME = "SkepBot";
 	
-	static String WOLFRAM_ALPHA_ID = ""; 
+	static String WOLFRAM_ALPHA_ID = "";
+	static String GOOGLE_API_KEY = "";
 	private static String TOKEN = ""; 
+	
 	
 	static String[] guilds = {"Pinchcliffe SMP", "Skepter's Server", "Blazers"};
 	//String[] channels = {"pinchcliffesmp", "staff", "general"};
@@ -80,7 +85,7 @@ public class SkepBot extends ListenerAdapter {
 	private Set<String> hints;
 	
 	//Online status
-	private static final boolean DISPLAY_ONLINE_STATUS = true;
+	private static final boolean DISPLAY_ONLINE_STATUS = false;
 	
 	//Cooldowns
 	Map<String, Long> cooldownsPerPerson = new WeakHashMap<String, Long>();
@@ -110,6 +115,7 @@ public class SkepBot extends ListenerAdapter {
 			prop.setProperty("bot_name", "SkepBot");
 			prop.setProperty("discord_token", "");
 			prop.setProperty("wolfram_alpha_id", "");
+			prop.setProperty("google_search_api_key", "");
 			prop.setProperty("servers", "Pinchcliffe SMP,Skepter's Server,Blazers");
 			prop.setProperty("users", "Bluey3004");
 
@@ -143,6 +149,7 @@ public class SkepBot extends ListenerAdapter {
 
 			BOT_NAME = prop.getProperty("bot_name");
 			WOLFRAM_ALPHA_ID = prop.getProperty("wolfram_alpha_id");
+			GOOGLE_API_KEY = prop.getProperty("google_search_api_key");
 			TOKEN = prop.getProperty("discord_token");
 			guilds = prop.getProperty("servers").split(",");
 			users = prop.getProperty("users").split(",");
@@ -264,9 +271,12 @@ public class SkepBot extends ListenerAdapter {
 			modules.add(new NumberFact());
 			modules.add(new Oodler());
 			modules.add(new PinchBot());
+			modules.add(new PoshInsult());
 			modules.add(new RandomFact());
 			modules.add(new RockPaperScissors());
 			modules.add(new Spongebob());
+			modules.add(new SpellChecker());
+			modules.add(new WouldYouRather());
 
 		}
         log("All set!");
@@ -355,6 +365,17 @@ public class SkepBot extends ListenerAdapter {
 						}
 						return;
 					}
+				}
+				
+				if(mainMsgLC.contains("search the web for ") && username.equals("Skepter")) {
+					//get last string:
+					String[] arrs = mainMsgLC.split(" ");
+					try {
+						System.out.println(WebsiteGetters.searchTheWeb(arrs[arrs.length - 1]));
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+					return;
 				}
 								
 				if(playingHangman) {
