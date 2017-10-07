@@ -85,7 +85,7 @@ public class SkepBot extends ListenerAdapter {
 	private Set<String> hints;
 	
 	//Online status
-	private static final boolean DISPLAY_ONLINE_STATUS = false;
+	private static final boolean DISPLAY_ONLINE_STATUS = true;
 	
 	//Cooldowns
 	Map<String, Long> cooldownsPerPerson = new WeakHashMap<String, Long>();
@@ -309,7 +309,12 @@ public class SkepBot extends ListenerAdapter {
 		} else {
 			mainMsg = event.getAuthor().getName().equals("PinchBot") ? (message.contains(":") ? message.substring(message.indexOf(":") + 2) : message) : message;
 		}
-			
+		
+		if(message.startsWith("*") && message.endsWith("*") && message.contains("joined the game")) {
+			String username = message.split(" ")[0].substring(1);
+			sendMessage(channel, "Welcome back, " + username + "!");
+			return;
+		}
 		
 		//Messages MUST now start with "SkepBot, <query>"
 		
@@ -352,6 +357,16 @@ public class SkepBot extends ListenerAdapter {
 			if(System.currentTimeMillis() > cooldownTime || isSkepter(event) || averageCooldown == 0 || playingHangman) {
 				cooldownsPerPerson.put(username, System.currentTimeMillis() + (COOLDOWN * 1000));
 								
+				if(mainMsgLC.contains("recalculate")) {
+					try {
+						sendMessage(channel, WebsiteGetters.fullResultsWolframAlpha(WebsiteGetters.latestQuery));
+					} catch(IOException e) {
+						sendMessage(channel, "I tried to recalculate it, but I can't do it :/");
+						e.printStackTrace();
+					}
+					return;
+				}
+				
 				for(Module module : modules) {
 					module.init(username, mainMsg);
 					if(module.isReady()) {

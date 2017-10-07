@@ -15,6 +15,7 @@ import org.json.JSONObject;
 public class WebsiteGetters {
 
 	private static final String USER_AGENT = "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/28.0.1500.95 Safari/537.36";
+	public static String latestQuery = "";
 	
 	public static String searchTheWeb(String query) throws IOException {
 		String API_KEY = SkepBot.GOOGLE_API_KEY;
@@ -42,8 +43,10 @@ public class WebsiteGetters {
 			return query;
 		}
 	}
+	
 	public static String shortAnswersWolframAlpha(String query) throws IOException {
-		
+		latestQuery = query;
+
 		//What can you do?
 		if(query.toLowerCase().matches(".*what.*can.*you.*do.*")) {
 			return "I can " + SkepBot.functions.get(ThreadLocalRandom.current().nextInt(0, SkepBot.functions.size()));
@@ -75,13 +78,76 @@ public class WebsiteGetters {
 			DecimalFormat format = new DecimalFormat("#.00");
 			
 			if(resultDouble > Long.MAX_VALUE) {
-				return "Number is too large to compute";
+				output = "Number is too large to compute";
 			} else {
-				return format.format(resultDouble) + " (2 decimal places)";
+				output = format.format(resultDouble) + " (2 decimal places)";
 			}
 		}
 		
+		//Convert ^2 to ² (quick and dirty)
+		//and ^3 to ³
+		//(Doesn't work with like ^24 though
+		output = output.replace("^2", "²");
+		output = output.replace("^3", "³");
+		
 		return output;
+	}
+	
+	public static String fullResultsWolframAlpha(String query) throws IOException {
+		// solve (4ex^(7x))=6
+		System.out.println("Recalculating " + query);
+		StringBuilder result = new StringBuilder();
+		//http://api.wolframalpha.com/v2/query?appid=75Y8QJ-6469R92HRA&input=population%20of%20france&output=json
+		String urlStr = "http://api.wolframalpha.com/v2/query?appid=" + SkepBot.WOLFRAM_ALPHA_ID + "&input=" + URLEncoder.encode(query, "UTF-8") + "&output=json";
+		System.out.println(urlStr);
+		SkepBot.log("Response sent to Wolfram Alpha (Full results)");
+		URL url = new URL(urlStr);
+		HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+		conn.setRequestMethod("GET");
+		
+		if(conn.getResponseCode() == 501) {
+			return "I couldn't understand that, sorry";
+		}		
+		
+		BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+		String line;
+		while ((line = rd.readLine()) != null) {
+			result.append(line);
+		}
+		rd.close();
+		
+		String output = result.toString();
+		
+		System.out.println(output);
+		JSONObject outputObject = new JSONObject(output);
+		JSONObject queryResult = outputObject.getJSONObject("queryresult");
+		if(queryResult.getBoolean("success")) {
+			//stuff
+			output = "";
+			
+			for(Object pods : queryResult.getJSONArray("pods")) {
+				//equals "Response" or "Results" or "Real solutions" 
+				switch(((JSONObject) pods).getString("title")) {
+					case "Results":
+					case "Result":
+					case "Response":
+					case "Real solutions":
+						for(Object subpods : ((JSONObject) pods).getJSONArray("subpods")) {
+							output = output + ((JSONObject) subpods).getString("plaintext") + ", ";
+						}
+						break;
+				}
+			}
+			
+			if(output.equals("")) {
+				output = "I tried to recalculate that, but couldn't find any viable answers";
+			}
+			
+			return output;
+		} else {
+			System.out.println(output);
+			return "I tried to recalculate that, but couldn't find any viable answers";
+		}
 	}
 
 	public static String getDadJoke() throws IOException {
